@@ -28,36 +28,6 @@ kwartyl <- function(dane, q)
   return (wynik)
 }
 
-#ZADANIE 1
-
-kwartyl <- function(dane, q)
-{
-  pozycjaKwartyla = sum(dane$counts) * q
-  nIsk <- dane$counts   #liczebnosc skumulowana
-  
-  for(i in 1:length(dane$counts))
-  {
-    nIsk[i] = sum(dane$counts[1:i])
-  }
-  
-  znaleziona = 0
-  pozycja = 1
-  while (znaleziona == 0)
-  {
-    if (pozycjaKwartyla < nIsk[pozycja] )
-      znaleziona = 1
-    else
-      pozycja = pozycja + 1
-  }
-  
-  xI0 = dane$breaks[pozycja]       #dolna wartosc przedzialu z kwantylem
-  nIskminus1 = nIsk[pozycja-1]    #liczebnosc skumulowana przedzialu poprzedzajacego kwantyl
-  nI0 = dane$counts[pozycja]       #liczebnosc przedzialu z kwantylem
-  rozpietoscPrzedzialu = dane$breaks[pozycja+1] - dane$breaks[pozycja]
-  wynik = xI0 + ((pozycjaKwartyla - nIskminus1) * (rozpietoscPrzedzialu / nI0))
-  return (wynik)
-}
-
 zad1a <- function(wektor)
 {
   ssd1 = sort(wektor)  #szereg szczegolowy
@@ -107,7 +77,7 @@ zad1b <- function(wektor)
 zadanie1 <- function(wektor1, wektor2) 
 {
   d_rozstep = max(wektor1)-min(wektor1)
-  d_n = 50
+  d_n = length(wektor1)
   d_breaks = seq(min(wektor1),max(wektor1), by = d_rozstep/round(sqrt(d_n)))
   
   #miary1
@@ -124,7 +94,7 @@ zadanie1 <- function(wektor1, wektor2)
   
   
   d_rozstep = max(wektor2)-min(wektor2)
-  d_n = 48
+  d_n = length(wektor2)
   d_breaks = seq(min(wektor2),max(wektor2), by = d_rozstep/round(sqrt(d_n)))
   
   #miary2
@@ -148,7 +118,7 @@ zadanie2 <- function(dane)
   n = length(dane) # obliczanie, ile element?w
   
   # przyjmowanie odpowiedniego k, w zale?no?ci od liczby element?w, brane z tablicy
-  if(length(dane) == 50) { k = 0.1253 }
+  if(length(dane) == 51) { k = 0.1241 }
   else { k = 0.1279 }
   
   p = pnorm((dane - mean(dane))/sd(dane))
@@ -169,5 +139,67 @@ zadanie2 <- function(dane)
   
 }
 
+#ZADANIE 3
 
+zadanie3 <- function(wektor, alfa)
+{
+  
+  #hipoteza alternatywna bedzie przecietna != 360
+  #hipoteza zerowa bedzie zawsze przecietna = 360
+  #z zadania 2. wiadomo, ze liczebnosc proby jest duza(n>30)
+  
+  cat("Poziom istotnosci testu: ", alfa, "\nHipoteza zerowa: przecietna == 360\n")
+  
+  #obliczenie wartosci statystyki dla duzej proby
+  U = ((mean(wektor) - 360))/(sd(wektor)/sqrt(length(wektor)))
+  
+  #sd odchylenie standardowe
+  
+  
+  #qt - funkcja podajaca kwantyl dla rozkladu tStudenta
+  
+  
+  cat("Hipoteza alternatywna: przecietna != 360\n")
+  cat("Wartosc statystyki:",U)
+  kwantylT = qt(1-alfa/2, df=length(wektor) - 1)    #wyznaczenie granic obszaru krytycznego
+  cat("\nPrzedzialy krytyczne: ( -oo, ",-(kwantylT),") u  (", kwantylT,",oo)\n")
+  if( -kwantylT < U & U < kwantylT)                 #sprawdzenie czy warto?? wyliczona mie?ci si? w przedziale nie krytycznym
+  {
+    cat("Brak podstaw do odrzucenia hipotezy zerowej.\n")
+  }
+  else
+  {
+    cat("Odrzucamy hipoteze zerowa na rzecz hipotezy alternatywnej.\n")
+  }
+  
+  #wynik <- c(t,kwantylT)
+  #return(wynik)
+}
+
+#zadanie 4
+
+zadanie4  <- function(wektor,odchylenie_st,alfa)
+{
+  cat("Poziom istotnosci testu: ", alfa, "\nOdchylenie standardowe: ",odchylenie_st,"\n")
+  
+  #obliczenie wartosci statystki
+  
+  statystyka=(var(wektor)*length(wektor))/(odchylenie_st^2) 
+  
+  # m!=m0
+  
+  cat("Hipoteza alternatywna: odchylenie standardowe nie jest rowne ",odchylenie_st,"\n")
+  kwantyl_g=qchisq(1-alfa/2,length(wektor)-1)
+  kwantyl_d=qchisq(alfa/2,length(wektor)-1)
+  cat("Wartosc statystyki:",statystyka)
+  cat("\nPrzedzialy krytyczne: ( -oo, ",-(kwantyl_d),") u  (", kwantyl_g,",oo)\n")
+  if(kwantyl_d<statystyka && statystyka<kwantyl_g)
+  {
+    cat("Na poziomie istotnosci ", alfa, "nie mozemy odrzucic hipotezy,ze odchylenie standardowe rocznych obrotow jest rowne 100 tys. zl")
+  }
+  else
+  {
+    cat("Na poziomie istotnosci ", alfa, "mozemy odrzucic hipoteze,ze odchylenie standardowe rocznych obrotow jest rowne 100 tys. zl")
+  }
+}
 
