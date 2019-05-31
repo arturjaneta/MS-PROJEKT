@@ -114,28 +114,30 @@ zadanie1 <- function(wektor1, wektor2)
 zadanie2 <- function(dane) 
 {
   
-  dane = sort(dane) # sortowanie danych
-  n = length(dane) # obliczanie, ile element?w
+  dane = sort(dane)
   
-  # przyjmowanie odpowiedniego k, w zale?no?ci od liczby element?w, brane z tablicy
-  if(length(dane) == 51) { k = 0.1241 }
-  else { k = 0.1279 }
-  
+  # obliczanie odpowiedniej wartosci krytycznej dla poziomu istotnosci 0.05
+  k = 0.886/sqrt(length(dane))
+
   p = pnorm((dane - mean(dane))/sd(dane))
-  # pnorm - The Normal Distribution ? rozk?ad normalny
-  # mean - Arithmetic Mean ? ?rednia arytmetyczna
+  
+  # standaryzacja zmiennej losowej
+  # pnorm - wartosc dystrybuanty rozkladu normalnego
+  # mean - srednia arytmetyczna
   # sd -  odchylenie standardowe 
-  # seq - Sequence Generation
-  
-  
-  Dplus = max(seq(1:n)/n - p)
-  Dminus = max(p - (seq(1:n) - 1)/n)
-  d = max(Dplus, Dminus)
-  
-  if(d < k) 
-  { cat("Dane maja rozklad normalny.\n") } 
+
+  Dm=0.0
+  Dp=0.0
+  for(i in 1:length(dane))
+  {
+    Dp = max(Dp, abs(i/length(dane) - p[i]))
+    Dm = max(Dm, abs(p[i]-(i-1)/length(dane)))
+  }
+  D=max(Dm,Dp)
+  if(D < k) 
+  { cat("Swierdza siê brak podstaw do odrzucenia hipotezy zerowej H0: Dane maja rozklad normalny.\n") } 
   else 
-  { cat("Dane nie maja rozkladu normalnego.\n") }
+  { cat("Odrzucono hipoteze zerowa H0: Dane maja rozklad normalny. przyjmuje sie hipoteze alternatywna H1: Dane nie maja rozkladu normalnego.\n") }
   
 }
 
