@@ -135,7 +135,7 @@ zadanie2 <- function(dane)
   }
   D=max(Dm,Dp)
   if(D < k) 
-  { cat("Swierdza siê brak podstaw do odrzucenia hipotezy zerowej H0: Dane maja rozklad normalny.\n") } 
+  { cat("Swierdza sie brak podstaw do odrzucenia hipotezy zerowej H0: Dane maja rozklad normalny.\n") } 
   else 
   { cat("Odrzucono hipoteze zerowa H0: Dane maja rozklad normalny. przyjmuje sie hipoteze alternatywna H1: Dane nie maja rozkladu normalnego.\n") }
   
@@ -153,7 +153,7 @@ zadanie3 <- function(wektor, alfa)
   cat("Poziom istotnosci testu: ", alfa, "\nHipoteza zerowa: przecietna == 360\n")
   
   #obliczenie wartosci statystyki dla duzej proby
-  U = ((mean(wektor) - 360))/(sd(wektor)/sqrt(length(wektor)))
+  t = ((mean(wektor) - 360)*(sqrt(length(wektor) - 1)))/(sd(wektor))
   
   #sd odchylenie standardowe
   
@@ -162,10 +162,10 @@ zadanie3 <- function(wektor, alfa)
   
   
   cat("Hipoteza alternatywna: przecietna != 360\n")
-  cat("Wartosc statystyki:",U)
+  cat("Wartosc statystyki:",t)
   kwantylT = qt(1-alfa/2, df=length(wektor) - 1)    #wyznaczenie granic obszaru krytycznego
   cat("\nPrzedzialy krytyczne: ( -oo, ",-(kwantylT),") u  (", kwantylT,",oo)\n")
-  if( -kwantylT < U & U < kwantylT)                 #sprawdzenie czy warto?? wyliczona mie?ci si? w przedziale nie krytycznym
+  if( -kwantylT < t & t < kwantylT)                 #sprawdzenie czy warto?? wyliczona mie?ci si? w przedziale nie krytycznym
   {
     cat("Brak podstaw do odrzucenia hipotezy zerowej.\n")
   }
